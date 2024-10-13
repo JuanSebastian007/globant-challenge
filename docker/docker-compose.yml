@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  flask_app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "5000:5000"  # Mapea el puerto 5000 del contenedor al puerto 5000 de la máquina host
+    environment:
+      FLASK_ENV: development  # Configuración del entorno de Flask
+      FLASK_APP: run.py        # Nombre del archivo principal de la aplicación
+    depends_on:
+      - db  # Si tienes un servicio de base de datos
+
+  db:
+    image: postgres:latest  # Usar la imagen de PostgreSQL
+    environment:
+      POSTGRES_USER: globant
+      POSTGRES_PASSWORD: globant
+      POSTGRES_DB: globant_db
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pgdata:
